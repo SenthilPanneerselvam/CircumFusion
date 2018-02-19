@@ -25,7 +25,7 @@ AppAsset::register($this);
 </head>
 
 <body style="height: 100%;background-color: #F0F4F7 !important;">
-<?php //$this->beginBody()?>
+<?php $this->beginBody()?>
 
     <div class="headerDiv" style="height: 7%">
 		<div class="col-md-12">
@@ -41,74 +41,43 @@ AppAsset::register($this);
         </div>
 		<div class="col-md-4"></div>
 		<div class="col-md-2" style="padding-top: 5px">
-			<span>
+			<div style="float: left;">
                 <i 
                 class="fa fa-user-circle"
                 aria-hidden="true" 
                 style="color: #9d9d9d;font-size: 31px;"></i>
-            </span>
-			<span style="padding-top: 1%;font-size: small;font-weight: bolder;">
+            </div>
+			<div style="float: left;width: 72%;font-size: small;font-weight: bolder;">
                 
                 <?php 
-                    echo Yii::$app->user->isGuest ? 'Login' : (
-                        Html::a('Hi '. Yii::$app->user->identity->username, '/site/logout')
+                    echo Yii::$app->user->isGuest ? 
+                        //'Login' 
+                        Html::a('Login', ['/site/login'])
+                    : (
+                        Html::beginForm(['/site/logout'], 'post')
+                        . Html::submitButton(
+                            'Logout (' . Yii::$app->user->identity->username . ')',
+                            ['class' => 'btn btn-link logout']
+                        )
+                        .'<i
+                        class="fa fa-chevron-down"
+                        aria-hidden="true" 
+                        style="font-size: smaller !important;color: #635f5f;padding-left: 3%;"></i>'
+                        . Html::endForm()
                         );
                 ?>
-            </span>
-            <i
-              class="fa fa-chevron-down"
-              aria-hidden="true" 
-              style="font-size: smaller !important;color: #635f5f;padding-left: 3%;"></i>
+            </div>
 			</div>
           	<div class="col-md-1"></div>
       	</div>
     </div>
-
-    <div class="subHeaderDiv">
-        <div class="col-md-1"></div>
-        <div class="col-sm-7">
-            <?php
-            NavBar::begin([
-                'brandLabel' => Yii::$app->name. HTML::tag('i', '', [
-                    'class' => 'fa fa-chevron-down',
-                    'style' => 'color: #9d9d9d;
-                                border: 1px solid #9d9d9d;
-                                border-radius: 10px;
-                                font-size: 11px;
-                                padding-left: 2px;
-                                padding-right: 3px;
-                                padding-top: 2px;
-                                padding-bottom: 2px;
-                                margin-left: 6px;'
-                ]),
-                'brandUrl' => Yii::$app->homeUrl,
-                'options' => [
-                    'class' => 'navbar navbar-responsive',
-                ]
-            ]);
-            echo Nav::widget([
-                'options' => ['class' => 'nav navbar-nav navbar-right'],
-                'items' => [
-                    
-                    ['label' => 'Profile', 'url' => ['/site/index']],
-                    ['label' => 'Portfolio', 'url' => ['/site/about']],
-                    ['label' => 'Event', 'url' => ['/site/contact']],
-                    ['label' => 'Contact', 'url' => ['/site/contact']],
-                    ['label' => 'User', 'url' => ['/site/contact']],
-                ],
-            ]);
-            NavBar::end();
-            ?>
-        </div>
-        <div class="col-md-1"></div>
-    </div>
-
-
-
+    
+    <?php if (!Yii::$app->user->isGuest) echo include('menu.php'); ?>
+<?php $this->beginContent('menu') ?>
     <div class="container">
         <?=Breadcrumbs::widget([
-    'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
-])?>
+            'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
+        ])?>
         <?=Alert::widget()?>
         <?=$content?>
     </div>
